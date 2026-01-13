@@ -1,0 +1,32 @@
+# Core dependencies
+langchain==0.2.2
+langchain-community==0.2.3
+langchain-core==0.2.5
+langchain-text-splitters==0.2.1
+
+# Ollama integration (replaces OpenAI)
+langchain-ollama==0.1.0
+
+# Embeddings (local, no API needed)
+sentence-transformers==2.2.2
+
+# Vector storage
+chromadb==0.5.0
+
+# Document loading
+unstructured==0.14.4
+python-magic-bin==0.4.14  # For file type detection
+pypdf==3.17.0  # For PDF loading
+python-docx==1.1.0  # For Word documents
+beautifulsoup4==4.12.3  # For HTML loading
+lxml==5.2.2  # For HTML parsing
+
+# Web interface
+streamlit==1.35.0
+
+# Utilities
+python-dotenv==1.0.1
+tiktoken==0.7.0
+
+# Note: Install with: pip install -r requirements.txt
+# For markdown support: pip install "unstructured[md]"
