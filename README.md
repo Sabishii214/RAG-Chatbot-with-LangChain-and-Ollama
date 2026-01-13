@@ -34,7 +34,7 @@ This project implements a complete RAG (Retrieval-Augmented Generation) pipeline
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/rag-chatbot.git
+git clone https://github.com/Sabishii214/RAG-Chatbot-with-LangChain-and-Ollama.git
 cd rag-chatbot
 ```
 
