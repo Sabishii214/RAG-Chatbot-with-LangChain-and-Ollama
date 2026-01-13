@@ -5,11 +5,20 @@ os.environ["ANONYMIZED_TELEMETRY"] = "False"
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import OllamaLLM
+import spacy
 
 CHROMA_PATH = "chroma"
 
-st.set_page_config(page_title="RAG Chatbot", page_icon="AI", layout="wide")
-st.title("Chatbot Using LangChain and RAG")
+# Load spaCy model for query processing (optional enhancement)
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    print("spaCy model not found. Downloading...")
+    os.system("python -m spacy download en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+
+st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
+st.title("RAG Chatbot with LangChain and Ollama")
 st.markdown("Ask questions about your documents")
 
 if 'messages' not in st.session_state:
@@ -33,6 +42,16 @@ def load_database():
     )
     return Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
 
+def process_query_with_spacy(query: str) -> str:
+    """Optional: Process query with spaCy for better search results"""
+    doc = nlp(query)
+    # Remove stop words and lemmatize for better matching
+    processed_tokens = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct]
+    # If processed query is too short, return original
+    if len(processed_tokens) < 2:
+        return query
+    return " ".join(processed_tokens)
+
 try:
     db = load_database()
     
@@ -55,7 +74,11 @@ try:
         
         with st.chat_message("assistant"):
             with st.spinner("Searching documents..."):
-                results = db.similarity_search_with_relevance_scores(prompt, k=num_results)
+                # Optional: Use spaCy to enhance query (comment out if not needed)
+                enhanced_query = process_query_with_spacy(prompt)
+                
+                # Use enhanced query for search, but original prompt for context
+                results = db.similarity_search_with_relevance_scores(enhanced_query, k=num_results)
                 
                 if not results or results[0][1] < 0.3:
                     response = "No relevant information found in the documents."
